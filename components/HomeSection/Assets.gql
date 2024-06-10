@@ -1,0 +1,74 @@
+query FetchDefaultAssetIds($limit: Int!) {
+  assets(
+    filter: { quantity: { greaterThan: "0" } }
+    orderBy: CREATED_AT_DESC
+    first: $limit
+  ) {
+    nodes {
+      chainId
+      collectionAddress
+      tokenId
+    }
+  }
+}
+
+query FetchAssets($limit: Int!, $filter: [AssetFilter!]!, $address: Address) {
+  assets(
+    filter: { quantity: { greaterThan: "0" }, and: $filter }
+    first: $limit
+  ) {
+    nodes {
+      chainId
+      collectionAddress
+      tokenId
+      name
+      collection {
+        chainId
+        address
+        name
+        standard
+      }
+      quantity
+      image
+      imageMimetype
+      creator {
+        address
+        name
+        image
+        verification {
+          status
+        }
+      }
+      owned: ownership(ownerAddress: $address) {
+        quantity
+      }
+      bestBid {
+        unitPrice
+        amount
+        currency {
+          image
+          name
+          id
+          decimals
+          symbol
+        }
+      }
+      firstSale {
+        id
+        unitPrice
+        currency {
+          image
+          name
+          id
+          decimals
+          symbol
+        }
+        maker {
+          address
+        }
+      }
+      totalSalesCount
+      totalSalesCurrencyDistinctCount
+    }
+  }
+}

@@ -1,0 +1,17 @@
+query NavbarAccount($account: Address!, $lastNotification: Datetime!) {
+  account(address: $account) {
+    address
+    name
+    image
+  }
+  notifications(
+    filter: {
+      accountAddress: { equalTo: $account }
+      createdAt: { greaterThan: $lastNotification }
+    }
+    includeWhenCollectionDeleted: YES
+    includeWhenTradeDeleted: YES
+  ) {
+    totalCount
+  }
+}

@@ -1,0 +1,53 @@
+fragment DropDetail on Drop {
+  id
+  startDate
+  endDate
+  unitPrice
+  supply
+  currency {
+    id
+    decimals
+    symbol
+    image
+  }
+  collection {
+    cover
+    image
+    address
+    chainId
+    name
+    deployer {
+      address
+      name
+      username
+      verification {
+        status
+      }
+    }
+  }
+}
+
+query FetchDrops($now: Datetime!, $limit: Int!, $offset: Int!) {
+  active: drops(
+    orderBy: [START_DATE_ASC]
+    filter: { endDate: { greaterThan: $now } }
+  ) {
+    nodes {
+      ...DropDetail
+    }
+  }
+  ended: drops(
+    orderBy: [START_DATE_DESC]
+    filter: { endDate: { lessThanOrEqualTo: $now } }
+    first: $limit
+    offset: $offset
+  ) {
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+    }
+    nodes {
+      ...DropDetail
+    }
+  }
+}
